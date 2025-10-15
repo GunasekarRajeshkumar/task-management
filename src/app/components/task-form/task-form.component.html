@@ -1,0 +1,100 @@
+<div class="task-form-container">
+  <div class="task-form-header">
+    <h3>{{ isEdit ? 'Edit Task' : 'Create New Task' }}</h3>
+    <button class="close-btn" (click)="onCancel()" type="button">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="task-form">
+    <div class="form-group">
+      <label for="title">Task Title</label>
+      <input
+        type="text"
+        id="title"
+        formControlName="title"
+        placeholder="Enter task title"
+        class="form-input"
+        [class.error]="getFieldError('title')"
+      />
+      <div class="error-message" *ngIf="getFieldError('title')">
+        {{ getFieldError('title') }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        placeholder="Describe the task in detail"
+        class="form-textarea"
+        rows="4"
+        [class.error]="getFieldError('description')"
+      ></textarea>
+      <div class="error-message" *ngIf="getFieldError('description')">
+        {{ getFieldError('description') }}
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="dueDate">Due Date</label>
+        <input
+          type="date"
+          id="dueDate"
+          formControlName="dueDate"
+          class="form-input"
+          [class.error]="getFieldError('dueDate')"
+        />
+        <div class="error-message" *ngIf="getFieldError('dueDate')">
+          {{ getFieldError('dueDate') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="priority">Priority Level</label>
+        <select
+          id="priority"
+          formControlName="priority"
+          class="form-select"
+          [class.error]="getFieldError('priority')"
+          aria-describedby="priority-description"
+        >
+          <option 
+            *ngFor="let option of getPriorityOptions()" 
+            [value]="option.value"
+            [title]="option.description"
+          >
+            {{ option.label }}
+          </option>
+        </select>
+        <div id="priority-description" class="priority-description">
+          Choose the urgency level for this task
+        </div>
+        <div class="error-message" *ngIf="getFieldError('priority')">
+          {{ getFieldError('priority') }}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button
+        type="button"
+        class="btn-secondary"
+        (click)="onCancel()"
+        [disabled]="isSubmitting"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="btn-primary"
+        [disabled]="isSubmitting || taskForm.invalid"
+      >
+        <span *ngIf="isSubmitting" class="spinner"></span>
+        {{ isSubmitting ? 'Saving...' : (isEdit ? 'Update Task' : 'Create Task') }}
+      </button>
+    </div>
+  </form>
+</div>

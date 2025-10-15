@@ -1,0 +1,44 @@
+<div class="project-form-container">
+  <h3>{{ project ? 'Edit Project' : 'Create New Project' }}</h3>
+  
+  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="project-form">
+    <div class="form-group">
+      <label for="name">Project Name *</label>
+      <input 
+        type="text" 
+        id="name" 
+        formControlName="name" 
+        placeholder="Enter project name"
+        class="form-control"
+        [class.error]="getFieldError('name')"
+      >
+      <div class="error-message" *ngIf="getFieldError('name')">
+        {{ getFieldError('name') }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea 
+        id="description" 
+        formControlName="description" 
+        placeholder="Enter project description"
+        class="form-control"
+        rows="4"
+        [class.error]="getFieldError('description')"
+      ></textarea>
+      <div class="error-message" *ngIf="getFieldError('description')">
+        {{ getFieldError('description') }}
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="onCancel()">
+        Cancel
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="projectForm.invalid">
+        {{ project ? 'Update Project' : 'Create Project' }}
+      </button>
+    </div>
+  </form>
+</div>

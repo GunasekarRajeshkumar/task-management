@@ -1,0 +1,187 @@
+<div class="auth-container">
+  <div class="auth-background">
+    <div class="floating-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+      <div class="shape shape-4"></div>
+    </div>
+    <div class="auth-pattern"></div>
+  </div>
+  
+  <div class="auth-content">
+    <div class="auth-illustration">
+      <div class="procreater-brand">
+        <div class="brand-text">
+          <h1 class="procreater-title">Procreater</h1>
+          <p class="procreater-subtitle">Join the Future of Task Management</p>
+          <div class="brand-features">
+            <div class="feature-item">
+              <i class="fas fa-rocket"></i>
+              <span>Powerful & Intuitive</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-shield-alt"></i>
+              <span>Secure & Reliable</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-users"></i>
+              <span>Team Collaboration</span>
+            </div>
+          </div>
+        </div>
+        <div class="brand-decoration">
+          <div class="decoration-circle circle-1"></div>
+          <div class="decoration-circle circle-2"></div>
+          <div class="decoration-circle circle-3"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="logo">
+          <div class="logo-icon">
+            <i class="fas fa-tasks"></i>
+          </div>
+          <div class="logo-text">
+            <h1>TaskFlow</h1>
+            <p class="company-name">Procreater Demo</p>
+          </div>
+        </div>
+        <p class="auth-subtitle">Create your account to get started</p>
+      </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="form-group">
+        <label for="name">
+          <i class="fas fa-user"></i>
+          Full Name
+        </label>
+        <div class="input-wrapper">
+          <input
+            type="text"
+            id="name"
+            formControlName="name"
+            placeholder="Enter your full name"
+            class="form-input"
+            [class.error]="getFieldError('name')"
+          />
+          <i class="fas fa-user input-icon"></i>
+        </div>
+        <div class="error-message" *ngIf="getFieldError('name')">
+          {{ getFieldError('name') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="username">
+          <i class="fas fa-at"></i>
+          Username
+        </label>
+        <div class="input-wrapper">
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            placeholder="Choose a username"
+            class="form-input"
+            [class.error]="getFieldError('username')"
+          />
+          <i class="fas fa-at input-icon"></i>
+        </div>
+        <div class="error-message" *ngIf="getFieldError('username')">
+          {{ getFieldError('username') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">
+          <i class="fas fa-envelope"></i>
+          Email Address
+        </label>
+        <div class="input-wrapper">
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            placeholder="Enter your email"
+            class="form-input"
+            [class.error]="getFieldError('email')"
+          />
+          <i class="fas fa-envelope input-icon"></i>
+        </div>
+        <div class="error-message" *ngIf="getFieldError('email')">
+          {{ getFieldError('email') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">
+          <i class="fas fa-lock"></i>
+          Password
+        </label>
+        <div class="input-wrapper">
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            placeholder="Create a password"
+            class="form-input"
+            [class.error]="getFieldError('password')"
+          />
+          <i class="fas fa-lock input-icon"></i>
+        </div>
+        <div class="error-message" *ngIf="getFieldError('password')">
+          {{ getFieldError('password') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">
+          <i class="fas fa-lock"></i>
+          Confirm Password
+        </label>
+        <div class="input-wrapper">
+          <input
+            type="password"
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            placeholder="Confirm your password"
+            class="form-input"
+            [class.error]="getFieldError('confirmPassword')"
+          />
+          <i class="fas fa-lock input-icon"></i>
+        </div>
+        <div class="error-message" *ngIf="getFieldError('confirmPassword')">
+          {{ getFieldError('confirmPassword') }}
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="isLoading || registerForm.invalid"
+        >
+          <i *ngIf="!isLoading" class="fas fa-user-plus"></i>
+          <span *ngIf="isLoading" class="spinner"></span>
+          {{ isLoading ? 'Creating Account...' : 'Create Account' }}
+        </button>
+      </div>
+
+      <div class="auth-messages">
+        <div class="error-message" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
+        <div class="success-message" *ngIf="successMessage">
+          {{ successMessage }}
+        </div>
+      </div>
+    </form>
+
+    <div class="auth-footer">
+      <p>Already have an account? <a (click)="goToLogin()" class="auth-link"><i class="fas fa-sign-in-alt"></i> Sign in</a></p>
+    </div>
+  </div>
+</div>

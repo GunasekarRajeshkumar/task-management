@@ -1,0 +1,126 @@
+<div class="virtual-task-list-container">
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="filter-group">
+      <label for="status-filter">Status:</label>
+      <select id="status-filter" [(ngModel)]="filters.status" (change)="onFilterChange()">
+        <option value="">All Statuses</option>
+        <option value="not_started">Not Started</option>
+        <option value="in_progress">In Progress</option>
+        <option value="completed">Completed</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="priority-filter">Priority:</label>
+      <select id="priority-filter" [(ngModel)]="filters.priority" (change)="onFilterChange()">
+        <option value="">All Priorities</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="urgent">Urgent</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="sort-filter">Sort By:</label>
+      <select id="sort-filter" [(ngModel)]="filters.sortBy" (change)="onFilterChange()">
+        <option value="dueDate">Due Date</option>
+        <option value="priority">Priority</option>
+        <option value="status">Status</option>
+        <option value="title">Title</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="sort-order">Order:</label>
+      <select id="sort-order" [(ngModel)]="filters.sortOrder" (change)="onFilterChange()">
+        <option value="asc">Ascending</option>
+        <option value="desc">Descending</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Virtual Scrolling List -->
+  <div class="virtual-list-container">
+    <cdk-virtual-scroll-viewport
+      [itemSize]="itemSize"
+      [minBufferPx]="minBufferPx"
+      [maxBufferPx]="maxBufferPx"
+      class="virtual-scroll-viewport">
+      
+      <div *cdkVirtualFor="let task of filteredTasks; trackBy: trackByTaskId" 
+           class="task-item"
+           [class.overdue]="isOverdue(task)">
+        
+        <div class="task-header">
+          <h3 class="task-title">{{ task.title }}</h3>
+          <div class="task-actions">
+            <button class="btn-edit" (click)="onEditTask(task)">
+              Edit
+            </button>
+            <button class="btn-delete" (click)="onDeleteTask(task.id)">
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <div class="task-body">
+          <p class="task-description" *ngIf="task.description">
+            {{ task.description }}
+          </p>
+
+          <div class="task-meta">
+            <div class="meta-item">
+              <strong>Due Date:</strong>
+              <span [class.overdue]="isOverdue(task)">
+                {{ formatDate(task.dueDate) }}
+              </span>
+            </div>
+
+            <div class="meta-item">
+              <strong>Priority:</strong>
+              <span class="priority-badge" [ngClass]="getPriorityClass(task.priority)">
+                {{ task.priority | titlecase }}
+              </span>
+            </div>
+
+            <div class="meta-item">
+              <strong>Project:</strong>
+              <span *ngIf="task.projectId; else noProject">{{ task.projectId }}</span>
+              <ng-template #noProject>No Project</ng-template>
+            </div>
+          </div>
+
+          <div class="task-status">
+            <label for="status-{{ task.id }}">Status:</label>
+            <select id="status-{{ task.id }}" 
+                    [value]="task.status" 
+                    (change)="onStatusChange(task, $any($event.target).value)">
+              <option value="not_started">Not Started</option>
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </cdk-virtual-scroll-viewport>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="filteredTasks.length === 0" class="empty-state">
+    <p>No tasks found. Create your first task!</p>
+  </div>
+
+  <!-- Task Form Modal -->
+  <div class="modal-overlay" *ngIf="showTaskForm" (click)="onTaskFormCancelled()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <app-task-form
+        [task]="editingTask || undefined"
+        [isEdit]="!!editingTask"
+        (taskSaved)="onTaskSaved($event)"
+        (cancelled)="onTaskFormCancelled()"
+      ></app-task-form>
+    </div>
+  </div>
+</div>

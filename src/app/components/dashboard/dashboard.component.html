@@ -1,0 +1,321 @@
+<div class="dashboard-container" role="main" aria-label="Task Management Dashboard">
+  <!-- Header -->
+  <header class="dashboard-header" role="banner">
+    <div class="header-content">
+      <div class="user-info">
+        <div class="user-avatar">
+          <img [src]="currentUser?.avatar" [alt]="'Profile picture of ' + currentUser?.name" />
+        </div>
+        <div class="user-details">
+          <h1>{{ getGreeting() }}, {{ currentUser?.name }}!</h1>
+          <p>Here's what's happening with your tasks</p>
+          <div class="company-badge">
+            <span class="company-text">Procreater Demo</span>
+          </div>
+        </div>
+      </div>
+      <div class="header-actions" role="toolbar" aria-label="Dashboard actions">
+        <button class="btn-primary" (click)="onCreateTask()" aria-label="Create new task">
+          <i class="fas fa-plus btn-icon" aria-hidden="true"></i>
+          New Task
+        </button>
+        <button class="btn-secondary" (click)="onLogout()" aria-label="Logout from application">
+          <i class="fas fa-sign-out-alt btn-icon" aria-hidden="true"></i>
+          Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid" role="region" aria-label="Task statistics">
+    <div class="stat-card" role="article" aria-label="Total tasks">
+      <div class="stat-icon" aria-hidden="true">
+        <i class="fas fa-tasks"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ stats.totalTasks }}</h3>
+        <p>Total Tasks</p>
+        <div class="stat-trend" aria-label="12% increase this week">
+          <i class="fas fa-arrow-up" aria-hidden="true"></i>
+          <span>+12% this week</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card" role="article" aria-label="Completed tasks">
+      <div class="stat-icon" aria-hidden="true">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ stats.completedTasks }}</h3>
+        <p>Completed</p>
+        <div class="stat-trend" aria-label="8% increase this week">
+          <i class="fas fa-arrow-up" aria-hidden="true"></i>
+          <span>+8% this week</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card" role="article" aria-label="Tasks in progress">
+      <div class="stat-icon" aria-hidden="true">
+        <i class="fas fa-spinner"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ stats.inProgressTasks }}</h3>
+        <p>In Progress</p>
+        <div class="stat-trend" aria-label="3% decrease this week">
+          <i class="fas fa-arrow-down" aria-hidden="true"></i>
+          <span>-3% this week</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card" role="article" aria-label="Overdue tasks">
+      <div class="stat-icon" aria-hidden="true">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ stats.overdueTasks }}</h3>
+        <p>Overdue</p>
+        <div class="stat-trend" aria-label="5% decrease this week">
+          <i class="fas fa-arrow-down" aria-hidden="true"></i>
+          <span>-5% this week</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card completion-rate" role="article" aria-label="Task completion rate">
+      <div class="stat-icon" aria-hidden="true">
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ stats.completionRate }}%</h3>
+        <p>Completion Rate</p>
+        <div class="stat-trend" aria-label="15% increase this week">
+          <i class="fas fa-arrow-up" aria-hidden="true"></i>
+          <span>+15% this week</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Analytics Section -->
+  <div class="analytics-section" role="region" aria-label="Task analytics">
+    <div class="analytics-card" role="article" aria-label="Task progress timeline">
+      <div class="analytics-header">
+        <h3>Task Progress Timeline</h3>
+        <p>Track your productivity over time</p>
+      </div>
+      <div class="timeline-container">
+        <div class="timeline-item completed">
+          <div class="timeline-marker">
+            <i class="fas fa-check"></i>
+          </div>
+          <div class="timeline-content">
+            <h4>Completed Tasks</h4>
+            <p>{{ stats.completedTasks }} tasks finished</p>
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="stats.completionRate"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="timeline-item in-progress">
+          <div class="timeline-marker">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="timeline-content">
+            <h4>In Progress</h4>
+            <p>{{ stats.inProgressTasks }} tasks active</p>
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="(stats.inProgressTasks / stats.totalTasks) * 100"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="timeline-item pending">
+          <div class="timeline-marker">
+            <i class="fas fa-pause"></i>
+          </div>
+          <div class="timeline-content">
+            <h4>Pending Tasks</h4>
+            <p>{{ stats.notStartedTasks }} tasks waiting</p>
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="(stats.notStartedTasks / stats.totalTasks) * 100"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="analytics-card">
+      <div class="analytics-header">
+        <h3>Priority Distribution</h3>
+        <p>Task priority breakdown</p>
+      </div>
+      <div class="priority-grid">
+        <div class="priority-item urgent">
+          <div class="priority-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="priority-info">
+            <h4>Urgent</h4>
+            <span class="priority-count">{{ getPriorityCount('urgent') }}</span>
+          </div>
+        </div>
+        
+        <div class="priority-item high">
+          <div class="priority-icon">
+            <i class="fas fa-arrow-up"></i>
+          </div>
+          <div class="priority-info">
+            <h4>High</h4>
+            <span class="priority-count">{{ getPriorityCount('high') }}</span>
+          </div>
+        </div>
+        
+        <div class="priority-item medium">
+          <div class="priority-icon">
+            <i class="fas fa-minus"></i>
+          </div>
+          <div class="priority-info">
+            <h4>Medium</h4>
+            <span class="priority-count">{{ getPriorityCount('medium') }}</span>
+          </div>
+        </div>
+        
+        <div class="priority-item low">
+          <div class="priority-icon">
+            <i class="fas fa-arrow-down"></i>
+          </div>
+          <div class="priority-info">
+            <h4>Low</h4>
+            <span class="priority-count">{{ getPriorityCount('low') }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="dashboard-content">
+    <!-- Recent Tasks -->
+    <div class="content-section">
+      <div class="section-header">
+        <h2>Recent Tasks</h2>
+        <a routerLink="/tasks" class="view-all-link">View All</a>
+      </div>
+      
+      <div class="tasks-list" *ngIf="recentTasks.length > 0; else noRecentTasks">
+        <div 
+          class="task-item" 
+          *ngFor="let task of recentTasks"
+          [class.overdue]="isOverdue(task)"
+        >
+          <div class="task-content">
+            <h4 class="task-title">{{ task.title }}</h4>
+            <p class="task-description">{{ task.description }}</p>
+            <div class="task-meta">
+              <span class="task-due-date" [class.overdue]="isOverdue(task)">
+                📅 {{ formatDate(task.dueDate) }}
+              </span>
+              <span class="task-priority" [ngClass]="getPriorityClass(task.priority)">
+                {{ task.priority | titlecase }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="task-actions">
+            <select 
+              class="status-select"
+              [value]="task.status"
+              (change)="onStatusChange(task, $any($event.target).value)"
+            >
+              <option value="not_started">To Do</option>
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Done</option>
+            </select>
+            <button class="edit-btn" (click)="onEditTask(task)">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="delete-btn" (click)="onDeleteTask(task.id)">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <ng-template #noRecentTasks>
+        <div class="empty-state">
+          <div class="empty-icon">
+            <i class="fas fa-clipboard-list"></i>
+          </div>
+          <p>No tasks yet. Create your first task to get started!</p>
+          <button class="btn-primary" (click)="onCreateTask()">
+            <i class="fas fa-plus"></i>
+            Create Task
+          </button>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Overdue Tasks -->
+    <div class="content-section" *ngIf="overdueTasks.length > 0">
+      <div class="section-header">
+        <h2>⚠️ Overdue Tasks</h2>
+        <span class="overdue-count">{{ overdueTasks.length }}</span>
+      </div>
+      
+      <div class="overdue-tasks">
+        <div 
+          class="task-item overdue" 
+          *ngFor="let task of overdueTasks"
+        >
+          <div class="task-content">
+            <h4 class="task-title">{{ task.title }}</h4>
+            <p class="task-description">{{ task.description }}</p>
+            <div class="task-meta">
+              <span class="task-due-date overdue">
+                📅 {{ formatDate(task.dueDate) }}
+              </span>
+              <span class="task-priority" [ngClass]="getPriorityClass(task.priority)">
+                {{ task.priority | titlecase }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="task-actions">
+            <select 
+              class="status-select"
+              [value]="task.status"
+              (change)="onStatusChange(task, $any($event.target).value)"
+            >
+              <option value="not_started">To Do</option>
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Done</option>
+            </select>
+            <button class="edit-btn" (click)="onEditTask(task)">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="delete-btn" (click)="onDeleteTask(task.id)">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Form Modal -->
+  <div class="modal-overlay" *ngIf="showTaskForm" (click)="onTaskFormCancelled()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <app-task-form
+        [task]="editingTask || undefined"
+        [isEdit]="!!editingTask"
+        (taskSaved)="onTaskSaved($event)"
+        (cancelled)="onTaskFormCancelled()"
+      ></app-task-form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,44 @@
+<div class="project-list-container">
+  <header class="project-list-header">
+    <h2>Projects</h2>
+  </header>
+
+  <div class="loading" *ngIf="loading$ | async">
+    <div class="spinner"></div>
+    <p>Loading projects...</p>
+  </div>
+
+  <div class="error" *ngIf="error$ | async as error">
+    <p class="error-message">{{ error }}</p>
+  </div>
+
+  <div class="projects-grid" *ngIf="projects$ | async as projects">
+    <div class="project-card" *ngFor="let project of projects">
+      <div class="project-header">
+        <h3 class="project-name">{{ project.name }}</h3>
+        <div class="project-actions">
+          <button class="btn-icon" (click)="onDeleteProject(project.id)" title="Delete Project">
+            🗑️
+          </button>
+        </div>
+      </div>
+      
+      <p class="project-description">{{ project.description }}</p>
+      
+      <div class="project-meta">
+        <div class="project-tasks">
+          <span class="task-count">{{ project.taskIds.length }}</span>
+          <span class="task-label">Tasks</span>
+        </div>
+        
+        <div class="project-dates">
+          <span class="created-date">Created: {{ formatDate(project.createdAt) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="(projects$ | async)?.length === 0 && !(loading$ | async)">
+    <p>No projects found. Create your first project to get started!</p>
+  </div>
+</div>

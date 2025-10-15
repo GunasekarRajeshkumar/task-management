@@ -1,0 +1,118 @@
+<div class="kanban-container">
+  <div class="kanban-header">
+    <h2>Task Board</h2>
+    <div class="board-stats">
+      <div class="stat-item" *ngFor="let column of columns">
+        <span class="stat-count">{{ getColumnStats(column).count }}</span>
+        <span class="stat-label">{{ column.title }}</span>
+        <span class="stat-overdue" *ngIf="getColumnStats(column).overdue > 0">
+          ({{ getColumnStats(column).overdue }} overdue)
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="kanban-board">
+    <div 
+      class="kanban-column" 
+      *ngFor="let column of columns"
+      [style.border-left-color]="column.color"
+    >
+      <div class="column-header">
+        <h3 class="column-title" [style.color]="column.color">
+          {{ column.title }}
+        </h3>
+        <span class="task-count">{{ column.tasks.length }}</span>
+      </div>
+
+      <div 
+        class="column-content"
+        (dragover)="onDragOver($event)"
+        (drop)="onDrop($event, column.status)"
+        (dragenter)="onDragEnter($event)"
+        (dragleave)="onDragLeave($event)"
+      >
+        <div 
+          class="task-card" 
+          *ngFor="let task of column.tasks; trackBy: trackByTaskId"
+          [class.overdue]="isOverdue(task)"
+          [class.dragging]="false"
+          draggable="true"
+          (dragstart)="onDragStart($event, task)"
+        >
+          <div class="task-header">
+            <div class="task-priority">
+              <i class="priority-icon" [ngClass]="getPriorityIcon(task.priority)"></i>
+              <span class="priority-label" [ngClass]="getPriorityClass(task.priority)">
+                {{ task.priority | titlecase }}
+              </span>
+            </div>
+            <div class="task-header-actions">
+              <button 
+                class="task-edit-btn" 
+                (click)="onTaskEdit(task)"
+                title="Edit task"
+              >
+                <i class="fas fa-edit"></i>
+              </button>
+              <button 
+                class="task-delete-btn" 
+                (click)="onTaskDelete(task.id)"
+                title="Delete task"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="task-content">
+            <h4 class="task-title">{{ task.title }}</h4>
+            <p class="task-description" *ngIf="task.description">
+              {{ task.description }}
+            </p>
+          </div>
+
+          <div class="task-footer">
+            <div class="task-due-date" [class.overdue]="isOverdue(task)">
+              <i class="fas fa-calendar-alt date-icon"></i>
+              <span class="date-text">{{ formatDate(task.dueDate) }}</span>
+            </div>
+            
+            <div class="task-actions">
+              <select 
+                class="status-select"
+                [value]="task.status"
+                (change)="onTaskStatusChange(task, $any($event.target).value)"
+              >
+                <option value="not_started">To Do</option>
+                <option value="in_progress">In Progress</option>
+                <option value="completed">Done</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-column" *ngIf="column.tasks.length === 0">
+        <div class="empty-state">
+          <div class="empty-icon">
+            <i class="fas fa-clipboard-list"></i>
+          </div>
+          <p>No tasks in {{ column.title.toLowerCase() }}</p>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Form Modal -->
+  <div class="modal-overlay" *ngIf="showTaskForm" (click)="onTaskFormCancelled()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <app-task-form
+        [task]="editingTask || undefined"
+        [isEdit]="!!editingTask"
+        (taskSaved)="onTaskSaved($event)"
+        (cancelled)="onTaskFormCancelled()"
+      ></app-task-form>
+    </div>
+  </div>
+</div>

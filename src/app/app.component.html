@@ -1,0 +1,7 @@
+<div class="app-container">
+  <app-navigation *ngIf="showNavigation"></app-navigation>
+  
+  <main class="main-content" [class.full-screen]="!showNavigation">
+    <router-outlet></router-outlet>
+  </main>
+</div>

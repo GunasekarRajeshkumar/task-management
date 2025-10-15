@@ -1,0 +1,60 @@
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-app);
+  position: relative;
+}
+
+.main-content {
+  flex: 1;
+  width: 100%;
+  padding: 20px;
+  background-color: var(--bg-app);
+  transition: all 0.3s ease;
+  min-height: 100vh;
+  margin-left: 0;
+
+  &.full-screen {
+    margin-left: 0;
+    padding: 0;
+  }
+
+  // Desktop: Add margin when sidebar is visible
+  @media (min-width: 1025px) {
+    margin-left: 280px;
+    width: calc(100% - 280px);
+    
+    &.full-screen {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+
+  // Tablet and Mobile: Full width
+  @media (max-width: 1024px) {
+    margin-left: 0;
+    width: 100%;
+    
+    &.full-screen {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+}
+
+// When sidebar is collapsed
+.sidebar.collapsed ~ .main-content {
+  margin-left: 80px;
+}
+
+// Mobile responsiveness
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    padding: 16px;
+  }
+  
+  .sidebar.collapsed ~ .main-content {
+    margin-left: 0;
+  }
+}

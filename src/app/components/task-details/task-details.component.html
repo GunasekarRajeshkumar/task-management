@@ -1,0 +1,97 @@
+<div class="task-details-overlay" *ngIf="isVisible" (click)="onClose()">
+  <div class="task-details-panel" (click)="$event.stopPropagation()">
+    <div class="panel-header">
+      <h2>Task Details</h2>
+      <button class="close-btn" (click)="onClose()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="panel-content" *ngIf="task">
+      <div class="task-title-section">
+        <h3 class="task-title">{{ task.title }}</h3>
+        <div class="task-meta">
+          <span class="task-id">#{{ task.id.slice(-8) }}</span>
+          <span class="task-created">Created {{ formatDate(task.createdAt) }}</span>
+        </div>
+      </div>
+
+      <div class="task-description">
+        <h4>Description</h4>
+        <p *ngIf="task.description; else noDescription">{{ task.description }}</p>
+        <ng-template #noDescription>
+          <p class="no-description">No description provided</p>
+        </ng-template>
+      </div>
+
+      <div class="task-properties">
+        <div class="property-group">
+          <label>Status</label>
+          <select [value]="task.status" (change)="onStatusChange($any($event.target).value)" class="status-select">
+            <option value="not_started">Not Started</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+
+        <div class="property-group">
+          <label>Priority</label>
+          <select [value]="task.priority" (change)="onPriorityChange($any($event.target).value)" class="priority-select">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="urgent">Urgent</option>
+          </select>
+        </div>
+
+        <div class="property-group">
+          <label>Due Date</label>
+          <div class="due-date-info">
+            <span class="due-date">{{ formatDate(task.dueDate) }}</span>
+            <span class="days-remaining" [class.overdue]="isOverdue()">
+              <i class="fas fa-clock"></i>
+              {{ isOverdue() ? 'Overdue' : getDaysUntilDue() + ' days left' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="property-group" *ngIf="task.projectId">
+          <label>Project</label>
+          <span class="project-id">{{ task.projectId }}</span>
+        </div>
+      </div>
+
+      <div class="task-timeline">
+        <h4>Timeline</h4>
+        <div class="timeline-item">
+          <div class="timeline-marker created"></div>
+          <div class="timeline-content">
+            <strong>Created</strong>
+            <span>{{ formatDate(task.createdAt) }}</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker updated"></div>
+          <div class="timeline-content">
+            <strong>Last Updated</strong>
+            <span>{{ formatDate(task.updatedAt) }}</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker due"></div>
+          <div class="timeline-content">
+            <strong>Due Date</strong>
+            <span>{{ formatDate(task.dueDate) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-footer">
+      <button class="btn-danger" (click)="onDelete()">
+        <i class="fas fa-trash"></i>
+        Delete Task
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,64 @@
+<nav class="sidebar" [class.collapsed]="!isMenuOpen" [class.mobile]="isMobile">
+  <!-- Mobile Icon (only visible on mobile when sidebar is closed) -->
+  <div class="mobile-menu-icon" *ngIf="isMobile && !isMenuOpen" (click)="toggleMenu()">
+    <i class="fas fa-bars"></i>
+  </div>
+
+  <div class="sidebar-header">
+    <div class="sidebar-brand">
+      <a routerLink="/dashboard" class="brand-link">
+        <div class="brand-icon">
+          <i class="fas fa-tasks"></i>
+        </div>
+        <div class="brand-text" *ngIf="isMenuOpen">
+          <span class="brand-title">TaskFlow</span>
+          <span class="brand-company">Procreater Demo</span>
+        </div>
+      </a>
+    </div>
+    <button class="sidebar-toggle" (click)="toggleMenu()" *ngIf="isMobile">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <div class="sidebar-content">
+    <!-- User Info -->
+    <div class="sidebar-user" *ngIf="currentUser">
+      <div class="user-avatar">
+        <img [src]="currentUser.avatar" [alt]="currentUser.name" />
+      </div>
+      <div class="user-details" *ngIf="isMenuOpen">
+        <span class="user-name">{{ currentUser.name }}</span>
+        <span class="user-email">{{ currentUser.email }}</span>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <div class="sidebar-menu">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
+        <i class="fas fa-home nav-icon"></i>
+        <span class="nav-text" *ngIf="isMenuOpen">Dashboard</span>
+      </a>
+      <a routerLink="/tasks/board" routerLinkActive="active" class="nav-link">
+        <i class="fas fa-columns nav-icon"></i>
+        <span class="nav-text" *ngIf="isMenuOpen">Board</span>
+      </a>
+      <a routerLink="/tasks/list" routerLinkActive="active" class="nav-link">
+        <i class="fas fa-list nav-icon"></i>
+        <span class="nav-text" *ngIf="isMenuOpen">Tasks</span>
+      </a>
+      <a routerLink="/tasks/virtual" routerLinkActive="active" class="nav-link">
+        <i class="fas fa-bolt nav-icon"></i>
+        <span class="nav-text" *ngIf="isMenuOpen">Virtual</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <button class="logout-btn" (click)="onLogout()">
+      <i class="fas fa-sign-out-alt"></i>
+      <span *ngIf="isMenuOpen">Logout</span>
+    </button>
+  </div>
+
+</nav>
